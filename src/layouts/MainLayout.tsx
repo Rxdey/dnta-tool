@@ -222,11 +222,11 @@ const Header = () => {
  */
 const MainLayout = ({ categories }: { categories: { id: string; title: string }[] }) => {
     return (
-        <div className="min-h-screen bg-background flex">
+        <div className="h-full bg-background flex min-w-7xl">
             <Sidebar categories={categories} />
             <div className="flex-1 flex flex-col">
                 <Header />
-                <main className="flex-1 p-6 bg-muted/30">
+                <main className="flex-1 p-6 bg-muted min-h-0">
                     <Outlet />
                 </main>
             </div>

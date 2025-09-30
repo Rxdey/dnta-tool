@@ -7,6 +7,7 @@ import { lazy, Suspense } from 'react';
 // lazy load tool entry components by path mapping - since tools.json is static and doesn't provide imports,
 // we'll map known tool ids to actual components. For now map image-to-base64 directly.
 const ImageToBase64 = lazy(() => import('@/tools/image-to-base64'));
+const ImageCompressor = lazy(() => import('@/tools/image-compressor'));
 
 const App = () => {
     return (
@@ -19,6 +20,14 @@ const App = () => {
                         element={
                             <Suspense>
                                 <ImageToBase64 />
+                            </Suspense>
+                        }
+                    />
+                    <Route
+                        path="tools/image-compressor"
+                        element={
+                            <Suspense>
+                                <ImageCompressor />
                             </Suspense>
                         }
                     />

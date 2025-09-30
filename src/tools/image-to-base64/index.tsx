@@ -161,7 +161,7 @@ const AppTool = () => {
     };
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto p-8 bg-background rounded-2xl">
             <h1 className="text-2xl font-bold mb-4">图片转 Base64 工具</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Card className="h-full">
