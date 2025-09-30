@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import MainLayout from '@/layouts/MainLayout';
 import ToolsListPage from '@/pages/ToolsListPage';
 import categories from '@/config/categories.json';
@@ -11,14 +11,14 @@ const ImageCompressor = lazy(() => import('@/tools/image-compressor'));
 
 const App = () => {
     return (
-        <BrowserRouter>
+        <Router>
             <Routes>
                 <Route path="/" element={<MainLayout categories={categories} />}>
                     <Route index element={<ToolsListPage />} />
                     <Route
                         path="tools/image-to-base64"
                         element={
-                            <Suspense>
+                            <Suspense fallback={<div>Loading...</div>}>
                                 <ImageToBase64 />
                             </Suspense>
                         }
@@ -26,14 +26,14 @@ const App = () => {
                     <Route
                         path="tools/image-compressor"
                         element={
-                            <Suspense>
+                            <Suspense fallback={<div>Loading...</div>}>
                                 <ImageCompressor />
                             </Suspense>
                         }
                     />
                 </Route>
             </Routes>
-        </BrowserRouter>
+        </Router>
     );
 };
 
