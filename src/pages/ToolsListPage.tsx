@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import useUiStore from '@/stores/useUiStore';
 import toolsData from '@/config/tools.json';
 import ToolCard from '@/components/tools/ToolCard';
 import { Badge } from '@/components/ui/badge';
@@ -9,16 +9,25 @@ import { Badge } from '@/components/ui/badge';
  * 展示所有可用工具的卡片网格，支持分类筛选和搜索
  */
 const ToolsListPage = () => {
-    const [searchParams] = useSearchParams();
-    const category = searchParams.get('category') || 'all';
-    
-    // 根据分类筛选工具
+    const category = useUiStore((s) => s.category);
+    const q = (useUiStore((s) => s.q) || '').trim().toLowerCase();
+
+    // 根据分类和搜索词筛选工具
     const filteredTools = useMemo(() => {
-        if (category === 'all') {
-            return toolsData;
+        let list = toolsData;
+        if (category !== 'all') {
+            list = list.filter((tool: any) => tool.category === category);
         }
-        return toolsData.filter((tool: any) => tool.category === category);
-    }, [category]);
+
+        if (!q) return list;
+
+        return list.filter((tool: any) => {
+            const inTitle = tool.title?.toLowerCase().includes(q);
+            const inDesc = tool.description?.toLowerCase().includes(q);
+            const inTags = (tool.tags || []).some((t: string) => t.toLowerCase().includes(q));
+            return inTitle || inDesc || inTags;
+        });
+    }, [category, q]);
 
     const getCategoryTitle = (categoryId: string) => {
         const categoryMap: { [key: string]: string } = {

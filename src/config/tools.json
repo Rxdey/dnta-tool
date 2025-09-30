@@ -19,24 +19,6 @@
     "path": "/tools/image-compressor"
   },
   {
-    "id": "qr-generator",
-    "title": "二维码生成器",
-    "description": "快速生成各种类型的二维码，支持文本、链接、WiFi密码等多种内容格式。",
-    "category": "images",
-    "tags": ["二维码", "生成", "扫码", "链接"],
-    "icon": "i-lucide-qr-code",
-    "path": "/tools/qr-generator"
-  },
-  {
-    "id": "text-formatter",
-    "title": "文本格式化",
-    "description": "强大的文本处理工具，支持格式化、转换大小写、去除空格等多种操作。",
-    "category": "text",
-    "tags": ["文本", "格式化", "转换", "处理"],
-    "icon": "i-lucide-type",
-    "path": "/tools/text-formatter"
-  },
-  {
     "id": "json-formatter",
     "title": "JSON 格式化",
     "description": "美化和格式化 JSON 数据，支持压缩、验证和语法高亮显示。",
@@ -45,15 +27,6 @@
     "icon": "i-lucide-code-2",
     "path": "/tools/json-formatter",
     "featured": true
-  },
-  {
-    "id": "color-picker",
-    "title": "颜色选择器",
-    "description": "专业的颜色选择工具，支持多种颜色格式转换，提供调色板和渐变生成。",
-    "category": "images",
-    "tags": ["颜色", "选择器", "调色板", "转换"],
-    "icon": "i-lucide-palette",
-    "path": "/tools/color-picker"
   },
   {
     "id": "url-encoder",
