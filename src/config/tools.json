@@ -1,0 +1,76 @@
+[
+  {
+    "id": "image-to-base64",
+    "title": "图片转 Base64",
+    "description": "上传或粘贴图片，调整压缩与格式，输出 Base64 编码。支持多种图片格式，一键复制结果。",
+    "category": "images",
+    "tags": ["图片", "base64", "压缩", "转换"],
+    "icon": "i-lucide-image",
+    "path": "/tools/image-to-base64",
+    "featured": true
+  },
+  {
+    "id": "image-compressor",
+    "title": "图片压缩器",
+    "description": "智能压缩图片文件大小，保持画质的同时减小文件体积。支持批量处理。",
+    "category": "images",
+    "tags": ["图片", "压缩", "优化", "批量"],
+    "icon": "i-lucide-minimize-2",
+    "path": "/tools/image-compressor"
+  },
+  {
+    "id": "qr-generator",
+    "title": "二维码生成器",
+    "description": "快速生成各种类型的二维码，支持文本、链接、WiFi密码等多种内容格式。",
+    "category": "images",
+    "tags": ["二维码", "生成", "扫码", "链接"],
+    "icon": "i-lucide-qr-code",
+    "path": "/tools/qr-generator"
+  },
+  {
+    "id": "text-formatter",
+    "title": "文本格式化",
+    "description": "强大的文本处理工具，支持格式化、转换大小写、去除空格等多种操作。",
+    "category": "text",
+    "tags": ["文本", "格式化", "转换", "处理"],
+    "icon": "i-lucide-type",
+    "path": "/tools/text-formatter"
+  },
+  {
+    "id": "json-formatter",
+    "title": "JSON 格式化",
+    "description": "美化和格式化 JSON 数据，支持压缩、验证和语法高亮显示。",
+    "category": "text",
+    "tags": ["JSON", "格式化", "验证", "美化"],
+    "icon": "i-lucide-code-2",
+    "path": "/tools/json-formatter",
+    "featured": true
+  },
+  {
+    "id": "color-picker",
+    "title": "颜色选择器",
+    "description": "专业的颜色选择工具，支持多种颜色格式转换，提供调色板和渐变生成。",
+    "category": "images",
+    "tags": ["颜色", "选择器", "调色板", "转换"],
+    "icon": "i-lucide-palette",
+    "path": "/tools/color-picker"
+  },
+  {
+    "id": "url-encoder",
+    "title": "URL 编码解码",
+    "description": "对 URL 进行编码和解码处理，支持批量转换和自动检测编码格式。",
+    "category": "text",
+    "tags": ["URL", "编码", "解码", "转换"],
+    "icon": "i-lucide-link",
+    "path": "/tools/url-encoder"
+  },
+  {
+    "id": "hash-generator",
+    "title": "哈希生成器",
+    "description": "生成文本或文件的多种哈希值，支持 MD5、SHA1、SHA256 等算法。",
+    "category": "text",
+    "tags": ["哈希", "加密", "MD5", "SHA"],
+    "icon": "i-lucide-hash",
+    "path": "/tools/hash-generator"
+  }
+]
