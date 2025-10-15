@@ -69,9 +69,9 @@ const AppTool = () => {
                         const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
                         const extension = file.type.split('/')[1] || 'png';
                         const pastedFile = new File([file], `pasted-image-${timestamp}.${extension}`, {
-                            type: file.type
+                            type: file.type,
                         });
-                        
+
                         setImageFile(pastedFile);
                         setFileName(pastedFile.name);
                         setOriginalFileSize(formatBytes(pastedFile.size));
