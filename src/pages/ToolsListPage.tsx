@@ -34,6 +34,7 @@ const ToolsListPage = () => {
             'all': '全部工具',
             'images': '图片工具',
             'text': '文本工具',
+            'qr': 'QR 工具',
         };
         return categoryMap[categoryId] || '未知分类';
     };
@@ -43,6 +44,7 @@ const ToolsListPage = () => {
             'all': '发现所有可用的实用工具',
             'images': '图片处理、编辑和转换工具',
             'text': '文本处理、格式化和转换工具',
+            'qr': '二维码生成、解析及文件转换工具',
         };
         return descMap[categoryId] || '';
     };

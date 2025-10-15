@@ -9,6 +9,7 @@ import { lazy, Suspense } from 'react';
 // we'll map known tool ids to actual components. For now map image-to-base64 directly.
 const ImageToBase64 = lazy(() => import('@/tools/image-to-base64'));
 const ImageCompressor = lazy(() => import('@/tools/image-compressor'));
+const QRTools = lazy(() => import('@/tools/qr-tools'));
 
 const App = () => {
     return (
@@ -30,6 +31,14 @@ const App = () => {
                             element={
                                 <Suspense fallback={<div>Loading...</div>}>
                                     <ImageCompressor />
+                                </Suspense>
+                            }
+                        />
+                        <Route
+                            path="tools/qr-tools"
+                            element={
+                                <Suspense fallback={<div>Loading...</div>}>
+                                    <QRTools />
                                 </Suspense>
                             }
                         />

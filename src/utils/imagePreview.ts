@@ -135,4 +135,17 @@ export const previewGallery = (images: Array<{ url: string; title?: string }>, i
   imagePreview.previewGallery(images, initialIndex);
 };
 
+/**
+ * 预览QR码图片列表的便捷方法
+ * @param qrImages QR码图片数组 [{ dataUrl: string, name: string }]
+ * @param initialIndex 初始显示的图片索引
+ */
+export const previewQRImages = (qrImages: Array<{ dataUrl: string; name: string }>, initialIndex = 0) => {
+  const images = qrImages.map(qr => ({
+    url: qr.dataUrl,
+    title: qr.name
+  }));
+  imagePreview.previewGallery(images, initialIndex);
+};
+
 export default imagePreview;

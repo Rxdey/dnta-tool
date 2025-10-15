@@ -17,5 +17,15 @@
     "tags": ["图片", "压缩", "优化", "批量"],
     "icon": "i-lucide-minimize-2",
     "path": "/tools/image-compressor"
+  },
+  {
+    "id": "qr-tools",
+    "title": "QR 工具箱",
+    "description": "二维码生成、解析及文件 Base64 转换工具集。支持文本转二维码、二维码解析、文件与 Base64 互转。",
+    "category": "qr",
+    "tags": ["二维码", "QR", "base64", "转换", "生成", "解析"],
+    "icon": "i-lucide-qr-code",
+    "path": "/tools/qr-tools",
+    "featured": true
   }
 ]
