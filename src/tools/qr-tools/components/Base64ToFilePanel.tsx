@@ -117,7 +117,7 @@ export function Base64ToFilePanel() {
     };
 
     return (
-        <div className="max-w-4xl mx-auto h-full">
+        <div className="max-w-6xl mx-auto h-full">
             <Card className="p-6">
                 <div className="space-y-4">
                     <div>

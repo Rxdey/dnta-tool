@@ -12,7 +12,7 @@ export default function QRTools() {
 
     return (
         <div className="container mx-auto p-4 h-full">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full h-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
                 {/* 整合标题和tabs */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                     <div className="flex items-center gap-2">
@@ -46,19 +46,19 @@ export default function QRTools() {
                         </TabsTrigger>
                     </TabsList>
                 </div>
-                <TabsContent value="generate" className="mt-0 min-h-0 overflow-hidden">
+                <TabsContent value="generate" className="mt-0 min-h-0" forceMount hidden={activeTab !== 'generate'}>
                     <QRGeneratorPanel />
                 </TabsContent>
 
-                <TabsContent value="parse" className="mt-0 min-h-0 overflow-hidden">
+                <TabsContent value="parse" className="mt-0 min-h-0" forceMount hidden={activeTab !== 'parse'}>
                     <QRParserPanel />
                 </TabsContent>
 
-                <TabsContent value="file-to-base64" className="mt-0 min-h-0 overflow-hidden ">
+                <TabsContent value="file-to-base64" className="mt-0 min-h-0" forceMount hidden={activeTab !== 'file-to-base64'}>
                     <FileToBase64Panel />
                 </TabsContent>
 
-                <TabsContent value="base64-to-file" className="mt-0 min-h-0 overflow-hidden">
+                <TabsContent value="base64-to-file" className="mt-0 min-h-0" forceMount hidden={activeTab !== 'base64-to-file'}>
                     <Base64ToFilePanel />
                 </TabsContent>
             </Tabs>
