@@ -262,7 +262,7 @@ export function QRParserPanel() {
     <div className="flex gap-4 size-full">
       {/* 左侧：上传和图片列表 */}
       <Card 
-        className="p-6 flex-1 flex flex-col min-h-0"
+        className="p-6 flex-1 flex flex-col min-h-0 min-w-0"
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -397,7 +397,7 @@ export function QRParserPanel() {
       </Card>
 
       {/* 右侧：解析结果 */}
-      <Card className="p-6 flex-1 flex flex-col">
+      <Card className="p-6 flex-1 min-w-0 flex flex-col">
         <div className="space-y-4 flex-1 flex flex-col min-h-0">
           <div className="flex items-center justify-between">
             <div>

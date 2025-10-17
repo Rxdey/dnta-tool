@@ -76,8 +76,8 @@ class ImagePreviewManager {
     // 创建 Viewer 实例
     this.viewer = new Viewer(container, {
       inline: false,
-      navbar: images.length > 1,
-      title: true,
+      navbar: false,
+      title: false,
       toolbar: {
         zoomIn: 1,
         zoomOut: 1,
