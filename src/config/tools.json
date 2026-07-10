@@ -27,5 +27,14 @@
     "icon": "i-lucide-qr-code",
     "path": "/tools/qr-tools",
     "featured": true
+  },
+  {
+    "id": "json-to-ts",
+    "title": "JSON 转 TypeScript",
+    "description": "粘贴 JSON 数据，自动转换为 TypeScript 类型定义。支持嵌套类型提取、数组去重等。",
+    "category": "text",
+    "tags": ["JSON", "TypeScript", "类型", "转换"],
+    "icon": "i-lucide-file-json",
+    "path": "/tools/json-to-ts"
   }
 ]

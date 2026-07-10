@@ -39,6 +39,7 @@ const Sidebar = ({ categories }: { categories: { id: string; title: string }[] }
                             all: 'i-lucide-grid-3x3',
                             images: 'i-lucide-image',
                             text: 'i-lucide-type',
+                            qr: 'i-lucide-qr-code',
                         };
 
                         return (
