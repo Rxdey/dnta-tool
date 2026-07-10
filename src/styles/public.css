@@ -3,6 +3,14 @@ html,body {
     margin: 0;
     padding: 0
 }
+html {
+    /* 兜底：禁止页面整体横向滚动条（纵向滚动行为不变，html 本就是视口纵向滚动器）。
+       长 JSON 字段由 json-viewer 内部 overflow:auto 滚动，不应撑出 body。 */
+    overflow-x: hidden;
+}
 #root {
     height: 100%
+}
+* {
+    scrollbar-width: thin;
 }

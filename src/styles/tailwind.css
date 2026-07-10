@@ -155,3 +155,29 @@
     @apply bg-background text-foreground;
     }
 }
+
+/* JSON 查看器（@_1602/json-viewer Web Component）主题适配 */
+/* --jv-* 绑定到项目语义色变量，随 .dark class 自动切换亮/暗 */
+json-viewer {
+  --jv-background-color: var(--background);
+  --jv-color: var(--foreground);
+  --jv-font-size: 12px;
+  --jv-font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --jv-key-color: var(--muted-foreground);
+  --jv-number-value-color: #0b69c7;
+  --jv-bool-value-color: #0b69c7;
+  --jv-string-value-color: #c41a16;
+  --jv-null-value-color: var(--muted-foreground);
+  --jv-focused-node-background: var(--accent);
+  --jv-hovered-node-background: var(--accent);
+  /* 关键：显式宽度约束 + min-width:0，防止长字段把宿主元素撑宽进而挤压外层布局；
+     overflow:auto 让超长内容在查看器内部滚动而非撑大元素 */
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: 100%;
+  padding: 0.75rem;
+  overflow: auto;
+  box-sizing: border-box;
+}

@@ -10,7 +10,10 @@ type UiState = {
 
 const readLocation = () => {
   if (typeof window === 'undefined') return { q: '', category: 'all' };
-  const params = new URLSearchParams(window.location.search);
+  // 项目使用 HashRouter，路由信息在 location.hash 中（如 #/?category=text）
+  const hash = window.location.hash.replace(/^#/, '');
+  const queryString = hash.includes('?') ? hash.split('?')[1] : '';
+  const params = new URLSearchParams(queryString);
   // 不从 URL 读取 q，保证搜索永远不影响 URL
   return {
     q: '',
@@ -29,12 +32,6 @@ const useUiStore = create<UiState>()((set) => {
     },
     setCategory: (category: string) => {
       set(() => ({ category }));
-      if (typeof window === 'undefined') return;
-      const params = new URLSearchParams(window.location.search);
-      if (category && category !== 'all') params.set('category', category);
-      else params.delete('category');
-      const newUrl = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ''}`;
-      window.history.replaceState({}, '', newUrl);
     },
     syncWithLocation: () => {
       const loc = readLocation();

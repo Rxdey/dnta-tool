@@ -36,5 +36,14 @@
     "tags": ["JSON", "TypeScript", "类型", "转换"],
     "icon": "i-lucide-file-json",
     "path": "/tools/json-to-ts"
+  },
+  {
+    "id": "json-viewer",
+    "title": "JSON 查看器",
+    "description": "粘贴或输入 JSON，以 Chrome DevTools 风格的树状结构实时预览。支持格式化、去转义与格式修复。",
+    "category": "text",
+    "tags": ["JSON", "预览", "查看", "格式化", "树"],
+    "icon": "i-lucide-braces",
+    "path": "/tools/json-viewer"
   }
 ]

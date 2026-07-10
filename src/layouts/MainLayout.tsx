@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { Input } from '@/components/ui/input';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
@@ -13,6 +13,15 @@ import useUiStore from '@/stores/useUiStore';
 const Sidebar = ({ categories }: { categories: { id: string; title: string }[] }) => {
     const currentCategory = useUiStore((s) => s.category);
     const setCategory = useUiStore((s) => s.setCategory);
+    const navigate = useNavigate();
+
+    // 点击分类：更新 store 并通过 React Router 真正导航回首页（带分类参数）
+    // 用 replace 避免分类切换在浏览器历史里堆积过多记录
+    const handleCategoryClick = (id: string) => {
+        setCategory(id);
+        const to = id && id !== 'all' ? `/?category=${id}` : '/';
+        navigate(to, { replace: true });
+    };
 
     return (
         <aside className="w-48 bg-background border-r border-border">
@@ -45,7 +54,7 @@ const Sidebar = ({ categories }: { categories: { id: string; title: string }[] }
                         return (
                             <li key={c.id}>
                                 <button
-                                    onClick={() => setCategory(c.id)}
+                                    onClick={() => handleCategoryClick(c.id)}
                                     className={`w-full text-left flex items-center space-x-2 px-2 py-2 rounded-md text-sm font-medium transition-colors ${
                                         isActive
                                             ? 'bg-accent text-accent-foreground'
@@ -225,9 +234,9 @@ const MainLayout = ({ categories }: { categories: { id: string; title: string }[
     return (
         <div className="h-full bg-background flex min-w-7xl">
             <Sidebar categories={categories} />
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col min-w-0">
                 <Header />
-                <main className="flex-1 p-6 bg-muted min-h-0">
+                <main className="flex-1 p-6 bg-muted min-h-0 min-w-0">
                     <Outlet />
                 </main>
             </div>
