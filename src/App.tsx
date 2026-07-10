@@ -12,6 +12,7 @@ const ImageCompressor = lazy(() => import('@/tools/image-compressor'));
 const QRTools = lazy(() => import('@/tools/qr-tools'));
 const JsonToTs = lazy(() => import('@/tools/json-to-ts'));
 const JsonViewer = lazy(() => import('@/tools/json-viewer'));
+const PdfToImage = lazy(() => import('@/tools/pdf-to-image'));
 
 const App = () => {
     return (
@@ -57,6 +58,14 @@ const App = () => {
                             element={
                                 <Suspense fallback={<div>Loading...</div>}>
                                     <JsonViewer />
+                                </Suspense>
+                            }
+                        />
+                        <Route
+                            path="tools/pdf-to-image"
+                            element={
+                                <Suspense fallback={<div>Loading...</div>}>
+                                    <PdfToImage />
                                 </Suspense>
                             }
                         />

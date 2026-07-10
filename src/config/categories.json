@@ -2,5 +2,6 @@
   { "id": "all", "title": "全部" },
   { "id": "images", "title": "图片工具" },
   { "id": "text", "title": "文本工具" },
-  { "id": "qr", "title": "QR 工具" }
+  { "id": "qr", "title": "QR 工具" },
+  { "id": "document", "title": "文档工具" }
 ]

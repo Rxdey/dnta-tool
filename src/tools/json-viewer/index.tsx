@@ -1,17 +1,20 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
+import CodeMirror from '@uiw/react-codemirror';
+import { json, jsonParseLinter } from '@codemirror/lang-json';
+import { linter } from '@codemirror/lint';
 
 // 注册 <json-viewer> 自定义元素（Chrome DevTools 网络面板 JSON 查看器复刻）
 import '@_1602/json-viewer';
 
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { fixJson, formatJson, safeParse, unescapeJson } from './utils/format';
 
 /**
  * JSON 查看器工具
- * 左侧输入 JSON 文本，右侧以 Chrome DevTools 风格的树状结构预览；
- * 仅当 JSON 合法时才渲染预览，非法时展示内联错误。
+ * 左侧基于 CodeMirror 编辑 JSON（行号 + 语法高亮 + 出错行实时标红波浪线），
+ * 右侧以 Chrome DevTools 风格的树状结构预览；仅当 JSON 合法时才渲染预览，
+ * 非法时在编辑框内标红出错行，并展示内联错误信息。
  */
 const JsonViewer = () => {
   /** 输入框文本 */
@@ -24,6 +27,21 @@ const JsonViewer = () => {
   const [error, setError] = useState<string | null>(null);
   /** 是否全屏预览 */
   const [isFullscreen, setIsFullscreen] = useState(false);
+  /** 是否暗色主题（跟随项目 <html class="dark">） */
+  const [isDark, setIsDark] = useState<boolean>(() =>
+    typeof document !== 'undefined' &&
+    document.documentElement.classList.contains('dark'),
+  );
+
+  // 监听 <html> 的 class 变化，使编辑器主题跟随项目亮/暗切换
+  useEffect(() => {
+    const el = document.documentElement;
+    const observer = new MutationObserver(() => {
+      setIsDark(el.classList.contains('dark'));
+    });
+    observer.observe(el, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
 
   // Esc 退出全屏
   useEffect(() => {
@@ -37,9 +55,11 @@ const JsonViewer = () => {
 
   /**
    * 解析文本并刷新预览状态
+   * @param text 待解析文本
+   * @param silent 是否静默（实时编辑时不弹 toast，避免刷屏）
    * @returns 是否解析成功
    */
-  const doPreview = useCallback((text: string): boolean => {
+  const doPreview = useCallback((text: string, silent = false): boolean => {
     if (!text.trim()) {
       setParsed(null);
       setHasResult(false);
@@ -51,7 +71,7 @@ const JsonViewer = () => {
       setParsed(null);
       setHasResult(false);
       setError(parseError);
-      toast.error('JSON 格式有误，无法预览');
+      if (!silent) toast.error('JSON 格式有误，无法预览');
       return false;
     }
     setParsed(data);
@@ -59,6 +79,12 @@ const JsonViewer = () => {
     setError(null);
     return true;
   }, []);
+
+  /** 输入框变化：实时更新文本并静默预览（出错行由 CodeMirror linter 标红） */
+  const handleChange = useCallback((value: string) => {
+    setInput(value);
+    doPreview(value, true);
+  }, [doPreview]);
 
   /** 格式化：重排为 2 空格缩进（含去前后引号处理） */
   const handleFormat = useCallback(() => {
@@ -94,7 +120,7 @@ const JsonViewer = () => {
     );
   }, [input, doPreview]);
 
-  /** 预览：重新解析当前输入 */
+  /** 预览：重新解析当前输入并提示 */
   const handlePreview = useCallback(() => {
     const ok = doPreview(input);
     if (ok) {
@@ -124,6 +150,9 @@ const JsonViewer = () => {
     setHasResult(false);
     setError(null);
   }, []);
+
+  // 编辑器扩展：JSON 语法高亮 + 实时语法校验（出错行标红波浪线，精确定位行号）
+  const extensions = useMemo(() => [json(), linter(jsonParseLinter())], []);
 
   return (
     <div className="flex flex-col overflow-hidden p-4 bg-background rounded-2xl h-full max-w-full">
@@ -191,13 +220,25 @@ const JsonViewer = () => {
             </div>
           </div>
 
-          {/* 输入区 */}
-          <Textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            className="flex-1 font-mono text-xs min-h-0 resize-none border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0"
-            placeholder="在此粘贴或输入 JSON 数据..."
-          />
+          {/* 输入区：CodeMirror（行号 + 语法高亮 + 出错行实时标红） */}
+          <div className="json-cm flex-1 min-h-0 overflow-hidden">
+            <CodeMirror
+              value={input}
+              onChange={handleChange}
+              height="100%"
+              theme={isDark ? 'dark' : 'light'}
+              extensions={extensions}
+              placeholder="在此粘贴或输入 JSON 数据..."
+              basicSetup={{
+                lineNumbers: true,
+                foldGutter: true,
+                highlightActiveLine: true,
+                highlightActiveLineGutter: true,
+                autocompletion: false,
+              }}
+              className="h-full text-xs"
+            />
+          </div>
         </div>
 
         {/* 右面板：预览 */}

@@ -181,3 +181,17 @@ json-viewer {
   overflow: auto;
   box-sizing: border-box;
 }
+
+/* JSON 查看器（CodeMirror 编辑器）布局约束 */
+.json-cm .cm-editor {
+  height: 100%;
+  font-size: 12px;
+}
+.json-cm .cm-scroller {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* 超长行在编辑器内部横向滚动，避免撑破左面板布局 */
+  overflow-x: auto;
+}
+.json-cm .cm-editor.cm-focused {
+  outline: none;
+}

@@ -45,5 +45,15 @@
     "tags": ["JSON", "预览", "查看", "格式化", "树"],
     "icon": "i-lucide-braces",
     "path": "/tools/json-viewer"
+  },
+  {
+    "id": "pdf-to-image",
+    "title": "PDF 转图片",
+    "description": "本地将 PDF 每页渲染为图片，支持逐页/打包 ZIP 下载，也可合成为一张长图。纯前端处理。",
+    "category": "document",
+    "tags": ["PDF", "图片", "转换", "导出", "长图"],
+    "icon": "i-lucide-file-image",
+    "path": "/tools/pdf-to-image",
+    "featured": true
   }
 ]
