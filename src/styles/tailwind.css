@@ -195,3 +195,30 @@ json-viewer {
 .json-cm .cm-editor.cm-focused {
   outline: none;
 }
+
+/* ===== 工作台：多标签布局 ===== */
+/* 侧边栏品牌渐变图标 */
+.sidebar-logo {
+  background: linear-gradient(135deg, var(--foreground), var(--muted-foreground));
+}
+/* 侧边栏导航项微交互 */
+.nav-item {
+  will-change: background-color;
+}
+/* 标签栏：隐藏滚动条但允许横向滚动 */
+.tabbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.tabbar::-webkit-scrollbar {
+  display: none;
+}
+/* 工作区面板：隐藏态仍保有尺寸，保证 CodeMirror/PDF 等按容器测量尺寸的组件正常 */
+.tab-panel {
+  contain: layout style;
+}
+
+/* 工具卡片图标渐变 */
+.tool-icon {
+  background: linear-gradient(140deg, var(--foreground), var(--muted-foreground));
+}

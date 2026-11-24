@@ -3,11 +3,17 @@
 ## 项目性质
 Vite + React 19 + TypeScript + Tailwind v4 + Radix/Shadcn 风格 UI 的多工具箱 Web 应用（"工具站"）。所有处理前端本地完成。
 
-## 新增工具的固定 4 步接入点（列表/搜索/侧边栏分类均自动读 tools.json，无需改）
+## 新增工具的固定 3 步接入点（列表/搜索/侧边栏分类均自动读 tools.json，无需改）
 1. `src/tools/<id>/index.tsx`：默认导出的工具页面组件（参考 `json-to-ts` / `image-to-base64`）。
 2. `src/config/tools.json`：加一条元数据（id/title/description/category/tags/icon/path/featured）。
-3. `src/App.tsx`：加 `lazy(() => import('@/tools/<id>'))` + 一条 `<Route>`。
+3. `src/config/toolComponents.ts`：在 `toolComponentMap` 加一条 `'/tools/<id>': lazy(() => import('@/tools/<id>'))`。
+   - ⚠️ 2026-11-24 起 App.tsx 已无 `<Routes>/<Route>`：页面改由 `src/components/layout/TabWorkspace.tsx` 驱动（多标签 keep-alive 工作区）。**不要再往 App.tsx 加 Route**。
 4. 如需自定义主题样式：在 `src/styles/tailwind.css` 末尾追加（类如 `json-viewer` 用 `--jv-*` 变量绑定项目主题变量，随 `.dark` class 自动亮暗切换）。
+
+## 多标签工作区架构（2026-11-24 起）
+- `useTabsStore.ts`（zustand）管理 tabs/activeKey；`TabBar.tsx` 标签栏；`TabWorkspace.tsx` 全量挂载 + visibility 显隐实现 keep-alive。
+- 隐藏面板用 `visibility:hidden` 而非 `display:none`（保住容器尺寸，CodeMirror/PDF 才不会量到 0）。
+- 新增分类除 categories.json 外，需同步 `MainLayout.tsx` 的 `ICON_MAP` 和 `ToolsListPage.tsx` 的 `CATEGORY_ICON/TITLE/DESC`。
 
 ### 现有分类（categories.json）
 all / images（图片工具）/ text（文本工具）/ qr（QR 工具）。新增分类需同步 `MainLayout.tsx` 的 `iconMap`。

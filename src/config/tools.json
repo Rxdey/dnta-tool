@@ -55,5 +55,14 @@
     "icon": "i-lucide-file-image",
     "path": "/tools/pdf-to-image",
     "featured": true
+  },
+  {
+    "id": "url-params-editor",
+    "title": "URL 参数编辑器",
+    "description": "解析 URL 的 Query 参数，以表单和 JSON 双视图可编辑展示，修改后实时生成新 URL。支持重复参数、自动编码。",
+    "category": "text",
+    "tags": ["URL", "Query", "参数", "JSON", "格式化"],
+    "icon": "i-lucide-link-2",
+    "path": "/tools/url-params-editor"
   }
 ]

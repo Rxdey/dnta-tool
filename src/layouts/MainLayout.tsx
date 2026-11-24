@@ -1,22 +1,39 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { Input } from '@/components/ui/input';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import TabBar from '@/components/layout/TabBar';
+import TabWorkspace from '@/components/layout/TabWorkspace';
 import toolsData from '@/config/tools.json';
 import useUiStore from '@/stores/useUiStore';
 
+/** 分类图标映射 */
+const ICON_MAP: Record<string, string> = {
+    all: 'i-lucide-layout-grid',
+    images: 'i-lucide-image',
+    text: 'i-lucide-type',
+    qr: 'i-lucide-qr-code',
+    document: 'i-lucide-file-text',
+};
+
 /**
- * 侧边栏组件
- * 显示工具分类导航菜单
+ * 侧边栏组件：品牌头 + 分类导航 + 底部统计。
  */
 const Sidebar = ({ categories }: { categories: { id: string; title: string }[] }) => {
     const currentCategory = useUiStore((s) => s.category);
     const setCategory = useUiStore((s) => s.setCategory);
     const navigate = useNavigate();
 
-    // 点击分类：更新 store 并通过 React Router 真正导航回首页（带分类参数）
-    // 用 replace 避免分类切换在浏览器历史里堆积过多记录
+    // 每个分类下的工具数量
+    const countByCategory = useMemo(() => {
+        const counts: Record<string, number> = { all: toolsData.length };
+        toolsData.forEach((t: { category: string }) => {
+            counts[t.category] = (counts[t.category] || 0) + 1;
+        });
+        return counts;
+    }, []);
+
     const handleCategoryClick = (id: string) => {
         setCategory(id);
         const to = id && id !== 'all' ? `/?category=${id}` : '/';
@@ -24,81 +41,95 @@ const Sidebar = ({ categories }: { categories: { id: string; title: string }[] }
     };
 
     return (
-        <aside className="w-48 bg-background border-r border-border">
-            {/* 侧边栏头部 */}
-            <div className="p-4 border-b border-border">
-                <Link to="/" className="flex items-center space-x-2 group">
-                    <div className="w-8 h-8 bg-foreground rounded-lg flex items-center justify-center">
-                        <i className="i-lucide-wrench text-background text-sm"></i>
+        <aside className="sidebar w-60 flex-shrink-0 flex flex-col bg-background border-r border-border">
+            {/* 品牌 */}
+            <div className="h-14 flex items-center px-4 border-b border-border">
+                <Link to="/" className="flex items-center gap-2.5 group min-w-0">
+                    <div className="sidebar-logo w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i className="i-lucide-wrench text-primary-foreground text-base"></i>
                     </div>
-                    <div>
-                        <h2 className="font-bold text-sm text-foreground group-hover:text-muted-foreground transition-colors">
-                            工具站
+                    <div className="min-w-0">
+                        <h2 className="font-bold text-sm leading-tight text-foreground truncate group-hover:text-muted-foreground transition-colors">
+                            DNTA TOOL
                         </h2>
+                        <p className="text-[10px] leading-tight text-muted-foreground">开发者工具箱</p>
                     </div>
                 </Link>
             </div>
 
-            {/* 导航菜单 */}
-            <nav className="p-3">
-                <ul className="space-y-1">
+            {/* 分类导航 */}
+            <nav className="flex-1 px-3 py-4 overflow-y-auto">
+                <p className="px-2 mb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+                    工具分类
+                </p>
+                <ul className="space-y-0.5">
                     {categories.map((c) => {
                         const isActive = currentCategory === c.id;
-                        const iconMap: { [key: string]: string } = {
-                            all: 'i-lucide-grid-3x3',
-                            images: 'i-lucide-image',
-                            text: 'i-lucide-type',
-                            qr: 'i-lucide-qr-code',
-                            document: 'i-lucide-files',
-                        };
-
                         return (
                             <li key={c.id}>
                                 <button
                                     onClick={() => handleCategoryClick(c.id)}
-                                    className={`w-full text-left flex items-center space-x-2 px-2 py-2 rounded-md text-sm font-medium transition-colors ${
+                                    className={`nav-item group relative w-full flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[13px] transition-colors ${
                                         isActive
-                                            ? 'bg-accent text-accent-foreground'
-                                            : 'text-foreground hover:bg-accent hover:text-accent-foreground'
+                                            ? 'bg-accent text-accent-foreground font-medium'
+                                            : 'text-muted-foreground hover:bg-accent/60 hover:text-foreground'
                                     }`}
                                 >
-                                    <i className={`${iconMap[c.id] || 'i-lucide-folder'} text-sm`}></i>
-                                    <span>{c.title}</span>
+                                    {isActive && (
+                                        <span className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-0.5 rounded-r bg-foreground/80" />
+                                    )}
+                                    <i className={`${ICON_MAP[c.id] || 'i-lucide-folder'} text-[15px] flex-shrink-0`}></i>
+                                    <span className="flex-1 text-left truncate">{c.title}</span>
+                                    <span
+                                        className={`text-[10px] tabular-nums ${
+                                            isActive ? 'text-foreground/60' : 'text-muted-foreground/60'
+                                        }`}
+                                    >
+                                        {countByCategory[c.id] || 0}
+                                    </span>
                                 </button>
                             </li>
                         );
                     })}
                 </ul>
             </nav>
+
+            {/* 底部统计卡片 */}
+            <div className="p-3">
+                <div className="sidebar-stat rounded-lg border border-border bg-muted/40 p-3">
+                    <div className="flex items-center gap-2 text-xs font-medium text-foreground">
+                        <i className="i-lucide-sparkles text-sm"></i>
+                        全部本地处理
+                    </div>
+                    <p className="mt-1 text-[10px] leading-relaxed text-muted-foreground">
+                        文件与数据仅在浏览器中处理，不上传服务器。
+                    </p>
+                    <div className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground/80">
+                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-success"></span>
+                        {toolsData.length} 个工具可用
+                    </div>
+                </div>
+            </div>
         </aside>
     );
 };
 
-/**
- * 获取面包屑导航信息
- */
+/** 面包屑信息 */
 const getBreadcrumbs = (pathname: string) => {
-    if (pathname === '/') {
-        return [{ name: '工具列表', path: '/' }];
-    }
-
-    // 匹配工具页面路径
-    const toolMatch = pathname.match(/^\/tools\/(.+)$/);
-    if (toolMatch) {
-        const toolId = toolMatch[1];
-        const tool = toolsData.find((t: any) => t.id === toolId);
+    if (pathname === '/') return [{ name: '工具首页', path: '/' }];
+    const match = pathname.match(/^\/tools\/(.+)$/);
+    if (match) {
+        const tool = (toolsData as { id: string; title: string }[]).find((t) => t.id === match[1]);
         return [
-            { name: '工具列表', path: '/' },
+            { name: '工具首页', path: '/' },
             { name: tool?.title || '未知工具', path: pathname },
         ];
     }
-
-    return [{ name: '工具列表', path: '/' }];
+    return [{ name: '工具首页', path: '/' }];
 };
 
 /**
- * 顶部头部组件
- * 包含面包屑导航、搜索框和操作按钮
+ * 顶部栏：面包屑 + 搜索（Cmd/Ctrl+K 聚焦）+ 主题切换。
  */
 const Header = () => {
     const searchValue = useUiStore((s) => s.q);
@@ -107,27 +138,33 @@ const Header = () => {
     const breadcrumbs = getBreadcrumbs(location.pathname);
     const isToolDetail = /^\/tools\/.+$/i.test(location.pathname);
 
-    // 本地输入状态，用于处理 IME 组合输入
+    const inputRef = useRef<HTMLInputElement>(null);
     const [localValue, setLocalValue] = useState<string>(searchValue || '');
     const composingRef = useRef(false);
     const debounceRef = useRef<number | null>(null);
 
-    // 当 store 的值发生变化（例如 popstate 同步）时，更新本地输入框值
     useEffect(() => {
         setLocalValue(searchValue || '');
     }, [searchValue]);
 
-    // 当浏览器前进/后退时同步 store
     useEffect(() => {
-        const onPop = () => {
-            // 使用 store 的 sync 方法
-            useUiStore.getState().syncWithLocation();
-        };
+        const onPop = () => useUiStore.getState().syncWithLocation();
         window.addEventListener('popstate', onPop);
         return () => window.removeEventListener('popstate', onPop);
     }, []);
 
-    // 清除防抖定时器的 helper
+    // Cmd/Ctrl + K 聚焦搜索框
+    useEffect(() => {
+        const onKey = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                inputRef.current?.focus();
+            }
+        };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, []);
+
     const clearDebounce = () => {
         if (debounceRef.current) {
             window.clearTimeout(debounceRef.current);
@@ -136,91 +173,99 @@ const Header = () => {
     };
 
     return (
-        <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border sticky top-0 z-50">
-            <div className="px-6 py-2">
-                <div className="flex items-center justify-between">
-                    {/* 面包屑导航 */}
-                    <nav className="flex items-center space-x-2 text-sm">
-                        {breadcrumbs.map((breadcrumb, index) => (
-                            <div key={breadcrumb.path} className="flex items-center space-x-2">
-                                {index > 0 && <i className="i-lucide-chevron-right text-muted-foreground w-4 h-4"></i>}
-                                {index === breadcrumbs.length - 1 ? (
-                                    <span className="font-medium text-foreground">{breadcrumb.name}</span>
-                                ) : (
-                                    <Link
-                                        to={breadcrumb.path}
-                                        className="text-muted-foreground hover:text-foreground transition-colors"
-                                    >
-                                        {breadcrumb.name}
-                                    </Link>
-                                )}
-                            </div>
-                        ))}
-                    </nav>
+        <header className="header h-14 flex-shrink-0 bg-background/90 backdrop-blur border-b border-border z-30">
+            <div className="h-full px-5 flex items-center justify-between gap-4">
+                {/* 面包屑 */}
+                <nav className="flex items-center gap-2 text-[13px] min-w-0">
+                    {breadcrumbs.map((crumb, i) => (
+                        <div key={crumb.path} className="flex items-center gap-2 min-w-0">
+                            {i > 0 && <i className="i-lucide-chevron-right text-muted-foreground w-3.5 h-3.5 flex-shrink-0"></i>}
+                            {i === breadcrumbs.length - 1 ? (
+                                <span className="font-medium text-foreground truncate">{crumb.name}</span>
+                            ) : (
+                                <Link
+                                    to={crumb.path}
+                                    className="text-muted-foreground hover:text-foreground transition-colors truncate"
+                                >
+                                    {crumb.name}
+                                </Link>
+                            )}
+                        </div>
+                    ))}
+                </nav>
 
-                    {/* 搜索框（详情页隐藏） */}
-                    {!isToolDetail && (
-                        <div className="relative w-[500px]">
-                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <i className="i-lucide-search text-muted-foreground w-4 h-4"></i>
-                            </div>
-                            <Input
-                                type="text"
-                                placeholder="搜索工具、标签或功能..."
-                                value={localValue}
-                                onChange={(e) => {
-                                    const v = e.target.value;
-                                    setLocalValue(v);
-                                    // 若处于 composition（输入法）中，暂不触发搜索
-                                    if (composingRef.current) return;
-                                    clearDebounce();
-                                    // 防抖：250ms，只更新 store（不修改 URL）
-                                    debounceRef.current = window.setTimeout(() => {
-                                        setQ(v);
-                                        debounceRef.current = null;
-                                    }, 250);
-                                }}
-                                onCompositionStart={() => {
-                                    composingRef.current = true;
-                                    clearDebounce();
-                                }}
-                                onCompositionEnd={(e: React.CompositionEvent<HTMLInputElement>) => {
-                                    composingRef.current = false;
-                                    // composition 结束后立即提交当前值到 store（不修改 URL）
-                                    const v = (e.target as HTMLInputElement).value;
-                                    setLocalValue(v);
-                                    clearDebounce();
+                {/* 搜索（工具页隐藏以保持工作区清爽） */}
+                {!isToolDetail && (
+                    <div className="relative w-full max-w-md">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i className="i-lucide-search text-muted-foreground w-4 h-4"></i>
+                        </div>
+                        <Input
+                            ref={inputRef}
+                            type="text"
+                            placeholder="搜索工具、标签或功能..."
+                            value={localValue}
+                            onChange={(e) => {
+                                const v = e.target.value;
+                                setLocalValue(v);
+                                if (composingRef.current) return;
+                                clearDebounce();
+                                debounceRef.current = window.setTimeout(() => {
                                     setQ(v);
-                                }}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                        // 按下回车时，仅把当前输入写入 store（但不修改 URL）
-                                        clearDebounce();
-                                        setQ(localValue);
-                                    }
-                                }}
-                                className="pl-12 pr-12 py-3 bg-background border-input focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-xl text-sm placeholder:text-muted-foreground"
-                            />
-                            {localValue && (
+                                    debounceRef.current = null;
+                                }, 200);
+                            }}
+                            onCompositionStart={() => {
+                                composingRef.current = true;
+                                clearDebounce();
+                            }}
+                            onCompositionEnd={(e: React.CompositionEvent<HTMLInputElement>) => {
+                                composingRef.current = false;
+                                const v = (e.target as HTMLInputElement).value;
+                                setLocalValue(v);
+                                clearDebounce();
+                                setQ(v);
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    clearDebounce();
+                                    setQ(localValue);
+                                }
+                            }}
+                            className="pl-9 pr-16 h-9 bg-muted/50 border-transparent focus-visible:bg-background focus-visible:ring-2 focus-visible:ring-ring rounded-lg text-xs placeholder:text-muted-foreground"
+                        />
+                        <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
+                            {localValue ? (
                                 <button
                                     onClick={() => {
                                         clearDebounce();
                                         setLocalValue('');
-                                        // 清空时仅清空搜索词（不修改 URL）
                                         setQ('');
                                     }}
-                                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground hover:text-foreground transition-colors"
+                                    className="pointer-events-auto text-muted-foreground hover:text-foreground transition-colors p-1"
+                                    aria-label="清空搜索"
                                 >
-                                    <i className="i-lucide-x w-4 h-4"></i>
+                                    <i className="i-lucide-x w-3.5 h-3.5"></i>
                                 </button>
+                            ) : (
+                                <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded border border-border bg-background text-[10px] text-muted-foreground font-mono">
+                                    ⌘K
+                                </kbd>
                             )}
                         </div>
-                    )}
-
-                    {/* 右侧操作按钮 */}
-                    <div className="flex items-center space-x-2">
-                        <ThemeToggle />
                     </div>
+                )}
+                {isToolDetail && <div className="flex-1" />}
+
+                <div className="flex items-center gap-1 flex-shrink-0">
+                    <Link
+                        to="/"
+                        className="h-8 w-8 rounded-md flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                        title="打开工具首页"
+                    >
+                        <i className="i-lucide-house text-base"></i>
+                    </Link>
+                    <ThemeToggle />
                 </div>
             </div>
         </header>
@@ -228,8 +273,7 @@ const Header = () => {
 };
 
 /**
- * 主布局组件
- * 包含侧边栏、顶部导航和主内容区域
+ * 主布局：侧边栏 + 顶栏 + 标签栏 + keep-alive 工作区。
  */
 const MainLayout = ({ categories }: { categories: { id: string; title: string }[] }) => {
     return (
@@ -237,8 +281,10 @@ const MainLayout = ({ categories }: { categories: { id: string; title: string }[
             <Sidebar categories={categories} />
             <div className="flex-1 flex flex-col min-w-0">
                 <Header />
-                <main className="flex-1 p-6 bg-muted min-h-0 min-w-0">
-                    <Outlet />
+                <TabBar />
+                {/* 外层工作区滚动容器：首页内容溢出到这里，滚动条贴内容区最右侧 */}
+                <main className="flex-1 p-5 bg-muted min-h-0 min-w-0 overflow-y-auto overflow-x-hidden">
+                    <TabWorkspace />
                 </main>
             </div>
         </div>
