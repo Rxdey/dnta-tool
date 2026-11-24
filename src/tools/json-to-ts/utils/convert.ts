@@ -1,10 +1,11 @@
-import type { ConvertOptions, ConvertedResult, GeneratedType, TypeField } from '../types';
+import type { AnyType, ConvertOptions, ConvertedResult, GeneratedType, TypeField } from '../types';
 
 // 默认配置
 const defaultOptions: ConvertOptions = {
 	nullAsOptional: false,
 	allOptional: false,
 	useInterface: false,
+	anyType: 'any',
 };
 
 /**
@@ -59,20 +60,22 @@ export function convert(jsonString: string, options?: Partial<ConvertOptions>): 
 
 	const types: GeneratedType[] = [];
 	const typeCache = new Map<string, string>();
+	// any 的替换类型（null / 空数组 / 空对象三处共用）
+	const anyType: AnyType = opts.anyType ?? 'any';
 
 	// 递归转换，返回类型引用名
 	const processValue = (value: unknown, path: string[]): string => {
 		// undefined 在 JSON 中不存在（会被忽略），这里处理 null
 		if (value === null) {
-			if (opts.nullAsOptional) {
-				return 'any'; // 调用方会标记为可选
-			}
-			return 'any';
+			// 调用方会根据 nullAsOptional 标记为可选
+			return anyType;
 		}
 
 		if (Array.isArray(value)) {
-			// 空数组
-			if (value.length === 0) return 'any[]';
+			// 空数组（联合类型需加括号，否则 string | number[] 会被解析成 string | (number[])）
+			if (value.length === 0) {
+				return anyType.includes('|') ? `(${anyType})[]` : `${anyType}[]`;
+			}
 
 			// 按结构特征分组去重
 			const groups = new Map<string, unknown[]>();
@@ -84,7 +87,7 @@ export function convert(jsonString: string, options?: Partial<ConvertOptions>): 
 
 			// 如果只有一个类型，直接处理第一个元素
 			if (groups.size === 1) {
-				const groupItems = groups.values().next().value;
+				const groupItems = groups.values().next().value!;
 				const innerType = processValue(groupItems[0], [...path, 'Item']);
 				return `${innerType}[]`;
 			}
@@ -103,7 +106,7 @@ export function convert(jsonString: string, options?: Partial<ConvertOptions>): 
 			const obj = value as Record<string, unknown>;
 
 			// 空对象
-			if (Object.keys(obj).length === 0) return 'Record<string, any>';
+			if (Object.keys(obj).length === 0) return `Record<string, ${anyType}>`;
 
 			const typeName = pathToTypeName(path);
 			// 如果此类型已生成过，直接返回引用

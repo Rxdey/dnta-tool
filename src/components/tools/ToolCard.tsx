@@ -32,14 +32,6 @@ interface ToolCardProps {
     view?: ToolCardView;
 }
 
-/** 推荐角标 */
-const FeaturedBadge = () => (
-    <Badge variant="outline" className="px-1.5 py-0 text-[10px] shrink-0">
-        <i className="i-lucide-star mr-0.5 text-[10px]"></i>
-        推荐
-    </Badge>
-);
-
 /**
  * 工具卡片组件
  * 支持紧凑列表行（list）与紧凑卡片（grid）两种形态。

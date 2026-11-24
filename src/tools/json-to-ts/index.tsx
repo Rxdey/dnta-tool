@@ -6,9 +6,16 @@ import 'prismjs/components/prism-typescript.min.js';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
-import type { ConvertOptions } from './types';
+import type { AnyType, ConvertOptions } from './types';
 import { convert, renderTypes } from './utils/convert';
 
 /**
@@ -120,6 +127,7 @@ const AppTool = () => {
 	const [nullAsOptional, setNullAsOptional] = useState(false);
 	const [allOptional, setAllOptional] = useState(false);
 	const [useInterface, setUseInterface] = useState(false);
+	const [anyType, setAnyType] = useState<AnyType>('any');
 	const [isFormatting, setIsFormatting] = useState(false);
 
 	// 配置选项
@@ -127,7 +135,8 @@ const AppTool = () => {
 		nullAsOptional,
 		allOptional,
 		useInterface,
-	}), [nullAsOptional, allOptional, useInterface]);
+		anyType,
+	}), [nullAsOptional, allOptional, useInterface, anyType]);
 
 	// 转换结果（防抖 300ms）
 	const result = useDebounceConvert(input, options, 300);
@@ -191,21 +200,35 @@ const AppTool = () => {
 							</div>
 						</div>
 
-						{/* 配置选项 */}
-						<div className="flex-shrink-0 flex items-center gap-4 px-3 py-1 border-b border-border">
-							<Label className="flex items-center gap-1.5 cursor-pointer text-xs whitespace-nowrap">
-								<Checkbox checked={nullAsOptional} onCheckedChange={(v) => setNullAsOptional(v === true)} />
-								null 视为可选
-							</Label>
-							<Label className="flex items-center gap-1.5 cursor-pointer text-xs whitespace-nowrap">
-								<Checkbox checked={allOptional} onCheckedChange={(v) => setAllOptional(v === true)} />
-								全部可选
-							</Label>
-							<Label className="flex items-center gap-1.5 cursor-pointer text-xs whitespace-nowrap">
-								<Checkbox checked={useInterface} onCheckedChange={(v) => setUseInterface(v === true)} />
-								interface
-							</Label>
+					{/* 配置选项 */}
+					<div className="flex-shrink-0 flex items-center gap-x-3 gap-y-1 flex-wrap px-3 py-1 border-b border-border">
+						<Label className="flex items-center gap-1.5 cursor-pointer text-xs whitespace-nowrap">
+							<Checkbox checked={nullAsOptional} onCheckedChange={(v) => setNullAsOptional(v === true)} />
+							null 视为可选
+						</Label>
+						<Label className="flex items-center gap-1.5 cursor-pointer text-xs whitespace-nowrap">
+							<Checkbox checked={allOptional} onCheckedChange={(v) => setAllOptional(v === true)} />
+							全部可选
+						</Label>
+						<Label className="flex items-center gap-1.5 cursor-pointer text-xs whitespace-nowrap">
+							<Checkbox checked={useInterface} onCheckedChange={(v) => setUseInterface(v === true)} />
+							interface
+						</Label>
+						<div className="flex items-center gap-1.5 whitespace-nowrap">
+							<span className="text-xs text-muted-foreground">any →</span>
+							<Select value={anyType} onValueChange={(v) => setAnyType(v as AnyType)}>
+								<SelectTrigger size="sm" className="h-6 w-[122px] px-2 text-xs">
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="any" className="text-xs">any</SelectItem>
+									<SelectItem value="string" className="text-xs">string</SelectItem>
+									<SelectItem value="number" className="text-xs">number</SelectItem>
+									<SelectItem value="string | number" className="text-xs">string | number</SelectItem>
+								</SelectContent>
+							</Select>
 						</div>
+					</div>
 
 						{/* 输入区 */}
 						<Textarea

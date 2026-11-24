@@ -1,3 +1,6 @@
+// any 类型可替换成的目标类型（下拉四选一）
+export type AnyType = 'any' | 'string' | 'number' | 'string | number';
+
 // 转换配置选项
 export interface ConvertOptions {
 	// null 值作为可选属性 (any?)
@@ -6,6 +9,8 @@ export interface ConvertOptions {
 	allOptional: boolean;
 	// 使用 interface 替代 type
 	useInterface: boolean;
+	// 推断为 any 的类型替换成什么（默认 any，保持原行为）
+	anyType: AnyType;
 }
 
 // 生成的类型字段
